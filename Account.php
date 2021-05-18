@@ -4,7 +4,9 @@
 namespace App;
 
 
-class Account
+use App\Utils\BankAccountInterface;
+
+class Account implements BankAccountInterface
 {
     private $balanceAnything;
     private $id;
@@ -25,34 +27,53 @@ class Account
         return $this->id;
     }
 
-    public function setBalance(int $balance): void
+    public function setBalance(int $amount): void
     {
-        $this->balanceAnything = $balance;
+        $this->balanceAnything = $amount;
     }
 
-    public function deposit(int $depositAmount): string
+    public function deposit($amount):void {
+
+        if($amount > 0) {
+            $newAmount = $this->getBalance() + $amount;
+            $this->setBalance($newAmount);
+        }
+    }
+
+    public function withdraw($amount): bool {
+
+        if ($amount > 0 && $amount < $this->getBalance()) {
+            $newAmount = $this->getBalance() - $amount;
+            $this->setBalance($newAmount);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /*public function deposit(int $amount): string
     {
-        if ($depositAmount < 0) {
+        if ($amount < 0) {
             return 'Cannot deposit below zero';
         } else {
             $current = $this->getBalance();
-            $newBalance = $current + $depositAmount;
+            $newBalance = $current + $amount;
             $this->setBalance($newBalance);
-            return strval($depositAmount) . '€ deposited.';
+            return strval($amount) . '€ deposited.';
         }
     }
 
-    public function withdraw(int $withdrawAmount): string
+    public function withdraw(int $amount): string
     {
-        if ($withdrawAmount < 0) {
+        if ($amount < 0) {
             return 'Impossible to withdraw negative amounts.';
-        } elseif ($withdrawAmount > $this->getBalance()) {
+        } elseif ($amount > $this->getBalance()) {
             return 'Not enough money to withdraw.';
         } else {
             $current = $this->getBalance();
-            $newBalance = $current - $withdrawAmount;
+            $newBalance = $current - $amount;
             $this->setBalance($newBalance);
-            return strval($withdrawAmount) . '€ withdrawn.';
+            return strval($amount) . '€ withdrawn.';
         }
-    }
+    }*/
 }
